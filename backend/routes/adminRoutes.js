@@ -5,7 +5,8 @@ import {
   getAllAppointments,
   getStats,
   getUsers,
-  setUserActive
+  setUserActive,
+  updateDoctor
 } from "../controllers/adminController.js";
 import { authorize, protect } from "../middleware/authMiddleware.js";
 import asyncHandler from "../utils/asyncHandler.js";
@@ -15,6 +16,7 @@ const router = Router();
 router.use(protect, authorize("admin"));
 router.get("/users", asyncHandler(getUsers));
 router.post("/doctors", asyncHandler(createDoctor));
+router.patch("/doctors/:id", asyncHandler(updateDoctor));
 router.patch("/users/:id/active", asyncHandler(setUserActive));
 router.delete("/users/:id", asyncHandler(deleteUser));
 router.get("/appointments", asyncHandler(getAllAppointments));

@@ -31,7 +31,7 @@ const AdminAppointmentsPage = () => {
       <div className="mb-5 grid gap-3 sm:grid-cols-[1fr_190px]">
         <SearchBar value={search} onChange={setSearch} placeholder="Search patient, doctor or reason" />
         <select className="field-control" value={status} onChange={(event) => setStatus(event.target.value)} aria-label="Filter appointments by status">
-          <option value="all">All statuses</option><option value="pending">Pending</option><option value="approved">Approved</option><option value="rejected">Rejected</option><option value="cancelled">Cancelled</option>
+          <option value="all">All statuses</option><option value="pending">Pending</option><option value="approved">Approved</option><option value="rejected">Rejected</option><option value="cancelled">Cancelled</option><option value="completed">Completed</option>
         </select>
       </div>
       {loading ? <LoadingSpinner label="Loading clinic appointments" /> : error ? <RequestError message={error} onRetry={reload} /> : filtered.length ? (

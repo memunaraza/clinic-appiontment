@@ -2,6 +2,7 @@ import { useCallback, useState } from "react";
 import { CalendarDays, Search } from "lucide-react";
 import toast from "react-hot-toast";
 import AppointmentCard from "../../components/appointments/AppointmentCard.jsx";
+import ReviewModal from "../../components/appointments/ReviewModal.jsx";
 import ConfirmationModal from "../../components/common/ConfirmationModal.jsx";
 import EmptyState from "../../components/common/EmptyState.jsx";
 import LoadingSpinner from "../../components/common/LoadingSpinner.jsx";
@@ -17,6 +18,7 @@ const PatientAppointmentsPage = () => {
   const [search, setSearch] = useState("");
   const [selected, setSelected] = useState(null);
   const [cancelling, setCancelling] = useState(false);
+  const [reviewTarget, setReviewTarget] = useState(null);
   const loadAppointments = useCallback(async () => {
     const { data } = await api.get("/appointments/my");
     return data.appointments;
@@ -56,6 +58,7 @@ const PatientAppointmentsPage = () => {
           <option value="approved">Approved</option>
           <option value="rejected">Rejected</option>
           <option value="cancelled">Cancelled</option>
+          <option value="completed">Completed</option>
         </select>
       </div>
       {loading ? <LoadingSpinner label="Loading your appointments" /> : error ? <RequestError message={error} onRetry={reload} /> : filtered.length ? (
@@ -66,6 +69,14 @@ const PatientAppointmentsPage = () => {
                 <button type="button" className="secondary-button py-2 text-xs text-danger hover:border-danger hover:bg-[#FCECEC]" onClick={() => setSelected(appointment)}>
                   Cancel request
                 </button>
+              )}
+              {appointment.status === "completed" && !appointment.hasReview && (
+                <button type="button" className="secondary-button py-2 text-xs" onClick={() => setReviewTarget(appointment)}>
+                  Leave a review
+                </button>
+              )}
+              {appointment.status === "completed" && appointment.hasReview && (
+                <span className="px-2 py-2 text-xs font-semibold text-success">Review submitted</span>
               )}
             </AppointmentCard>
           ))}
@@ -87,6 +98,15 @@ const PatientAppointmentsPage = () => {
         onConfirm={confirmCancel}
         onClose={() => !cancelling && setSelected(null)}
       />
+      {reviewTarget && <ReviewModal
+        appointment={reviewTarget}
+        onClose={() => setReviewTarget(null)}
+        onSubmitted={() => {
+          setReviewTarget(null);
+          toast.success("Your review was submitted.");
+          reload();
+        }}
+      />}
     </div>
   );
 };

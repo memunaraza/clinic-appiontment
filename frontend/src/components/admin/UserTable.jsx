@@ -1,5 +1,11 @@
 import { getInitials } from "../../utils/formatters.js";
 
+const UserAvatar = ({ user, size = "h-9 w-9" }) => (
+  user.profilePicture
+    ? <img src={user.profilePicture} alt="" className={`${size} shrink-0 rounded-full object-cover`} referrerPolicy="no-referrer" />
+    : <span className={`flex ${size} shrink-0 items-center justify-center rounded-full bg-accent text-xs font-bold text-medical`}>{getInitials(user.name)}</span>
+);
+
 const UserTable = ({ users, role, renderActions }) => (
   <>
     <div className="hidden overflow-hidden rounded-panel border border-line bg-white shadow-card md:block">
@@ -20,7 +26,7 @@ const UserTable = ({ users, role, renderActions }) => (
               <tr key={user._id} className="transition hover:bg-canvas/70">
                 <td className="px-5 py-4">
                   <div className="flex items-center gap-3">
-                    <span className="flex h-9 w-9 items-center justify-center rounded-full bg-accent text-xs font-bold text-medical">{getInitials(user.name)}</span>
+                    <UserAvatar user={user} />
                     <span className="font-semibold text-ink">{user.name}</span>
                   </div>
                 </td>
@@ -44,7 +50,7 @@ const UserTable = ({ users, role, renderActions }) => (
       {users.map((user) => (
         <article key={user._id} className="rounded-panel border border-line bg-white p-4 shadow-card">
           <div className="flex items-start gap-3">
-            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-accent text-xs font-bold text-medical">{getInitials(user.name)}</span>
+            <UserAvatar user={user} size="h-10 w-10" />
             <div className="min-w-0 flex-1">
               <p className="truncate font-semibold text-ink">{user.name}</p>
               <p className="break-all text-xs text-muted">{user.email}</p>

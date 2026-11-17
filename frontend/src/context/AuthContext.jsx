@@ -28,6 +28,15 @@ export const AuthProvider = ({ children }) => {
     setSession(null);
   }, []);
 
+  const updateUser = useCallback((updates) => {
+    setSession((current) => {
+      if (!current) return current;
+      const nextSession = { ...current, user: { ...current.user, ...updates } };
+      writeSession(nextSession);
+      return nextSession;
+    });
+  }, []);
+
   useEffect(() => {
     const handleUnauthorized = () => setSession(null);
     window.addEventListener("clinicflow:unauthorized", handleUnauthorized);
@@ -40,8 +49,9 @@ export const AuthProvider = ({ children }) => {
     isAuthenticated: Boolean(session?.token && session?.user),
     login,
     register,
+    updateUser,
     logout
-  }), [session, login, register, logout]);
+  }), [session, login, register, updateUser, logout]);
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };

@@ -33,21 +33,6 @@ const userSchema = new mongoose.Schema(
       default: "patient",
       required: true
     },
-    specialization: {
-      type: String,
-      trim: true,
-      maxlength: 100,
-      required: function () {
-        return this.role === "doctor";
-      }
-    },
-    experience: {
-      type: Number,
-      min: 0,
-      required: function () {
-        return this.role === "doctor";
-      }
-    },
     isActive: {
       type: Boolean,
       default: true,

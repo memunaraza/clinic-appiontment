@@ -1,4 +1,5 @@
 import jwt from "jsonwebtoken";
+import Doctor from "../models/Doctor.js";
 import User from "../models/User.js";
 import { isObjectBody, isValidEmail, isValidName, isValidPassword } from "../utils/validation.js";
 
@@ -63,6 +64,15 @@ export const login = async (req, res) => {
     return res.status(403).json({ message: "This account is deactivated" });
   }
 
+  const doctorProfile = user.role === "doctor"
+    ? await Doctor.findOne({ user: user._id }).select(
+      "phone profilePicture specialization qualification experience consultationFee biography"
+    ).lean()
+    : null;
+  if (user.role === "doctor" && !doctorProfile) {
+    return res.status(403).json({ message: "Doctor profile is unavailable. Contact your administrator." });
+  }
+
   return res.status(200).json({
     token: createToken(user.id),
     user: {
@@ -70,8 +80,13 @@ export const login = async (req, res) => {
       name: user.name,
       email: user.email,
       role: user.role,
-      specialization: user.specialization,
-      experience: user.experience,
+      phone: doctorProfile?.phone,
+      profilePicture: doctorProfile?.profilePicture,
+      specialization: doctorProfile?.specialization,
+      qualification: doctorProfile?.qualification,
+      experience: doctorProfile?.experience,
+      consultationFee: doctorProfile?.consultationFee,
+      biography: doctorProfile?.biography,
       isActive: user.isActive
     }
   });

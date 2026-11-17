@@ -1,8 +1,11 @@
 import {
   CalendarDays,
+  Bell,
   ClipboardCheck,
   LayoutDashboard,
   LogOut,
+  CalendarRange,
+  MessageSquareText,
   Stethoscope,
   UserRound,
   Users,
@@ -21,6 +24,10 @@ export const navigationByRole = {
     { label: "Dashboard", to: "/doctor/dashboard", icon: LayoutDashboard },
     { label: "Appointment requests", to: "/doctor/requests", icon: ClipboardCheck },
     { label: "All appointments", to: "/doctor/appointments", icon: CalendarDays },
+    { label: "My patients", to: "/doctor/patients", icon: Users },
+    { label: "Availability", to: "/doctor/availability", icon: CalendarRange },
+    { label: "Reviews", to: "/doctor/reviews", icon: MessageSquareText },
+    { label: "Notifications", to: "/doctor/notifications", icon: Bell },
     { label: "My profile", to: "/doctor/profile", icon: UserRound }
   ],
   admin: [

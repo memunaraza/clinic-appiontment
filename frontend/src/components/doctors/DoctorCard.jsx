@@ -4,9 +4,9 @@ import { getInitials } from "../../utils/formatters.js";
 const DoctorCard = ({ doctor, onView, onBook }) => (
   <article className="group rounded-panel border border-line bg-white p-5 shadow-card transition hover:-translate-y-1 hover:shadow-lift sm:p-6">
     <div className="flex items-start justify-between">
-      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-accent font-display text-base font-extrabold text-medical">
-        {getInitials(doctor.name)}
-      </div>
+      {doctor.profilePicture
+        ? <img src={doctor.profilePicture} alt="" className="h-14 w-14 rounded-2xl object-cover" referrerPolicy="no-referrer" />
+        : <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-accent font-display text-base font-extrabold text-medical">{getInitials(doctor.name)}</div>}
       <span className="rounded-full bg-[#E7F5EF] px-2.5 py-1 text-[11px] font-semibold text-success">Active provider</span>
     </div>
     <div className="mt-4">
@@ -16,6 +16,7 @@ const DoctorCard = ({ doctor, onView, onBook }) => (
         {doctor.specialization || "General practice"}
       </p>
     </div>
+    {doctor.qualification && <p className="mt-3 truncate text-xs font-medium text-muted">{doctor.qualification}</p>}
     <p className="mt-3 text-sm text-muted">{Number(doctor.experience) || 0} years of experience</p>
     <div className="mt-5 grid grid-cols-2 gap-2 border-t border-line pt-4">
       <button type="button" className="secondary-button py-2.5 text-xs" onClick={() => onView(doctor)}>

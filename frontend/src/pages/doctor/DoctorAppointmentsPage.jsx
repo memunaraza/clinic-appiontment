@@ -56,6 +56,7 @@ const DoctorAppointmentsPage = ({ requestsOnly = false }) => {
           <option value="approved">Approved</option>
           <option value="rejected">Rejected</option>
           <option value="cancelled">Cancelled</option>
+          <option value="completed">Completed</option>
         </select>
       </div>
       {loading ? <LoadingSpinner label="Loading assigned appointments" /> : error ? <RequestError message={error} onRetry={reload} /> : filtered.length ? (
@@ -71,6 +72,11 @@ const DoctorAppointmentsPage = ({ requestsOnly = false }) => {
                     {updatingId === appointment._id ? "Updating…" : <><Check className="h-3.5 w-3.5" /> Approve</>}
                   </button>
                 </>
+              )}
+              {appointment.status === "approved" && !requestsOnly && (
+                <button type="button" className="primary-button py-2 text-xs" onClick={() => updateStatus(appointment, "completed")} disabled={updatingId === appointment._id}>
+                  {updatingId === appointment._id ? "Updating…" : <><Check className="h-3.5 w-3.5" /> Mark complete</>}
+                </button>
               )}
             </AppointmentCard>
           ))}

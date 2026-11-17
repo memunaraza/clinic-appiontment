@@ -36,6 +36,35 @@ npm start
 
 The API listens on `http://localhost:5000` by default. `GET /api/health` is a health check and becomes available after MongoDB connects. Production requires `MONGODB_URI`, `JWT_SECRET`, and `CLIENT_ORIGIN`; configure the frontend origin in the hosting provider's environment settings. Ensure MongoDB Atlas allows connections from the API host.
 
+## MongoDB collections
+
+- `users` stores login accounts and roles (admin, doctor, or patient). Doctor accounts are still users for authentication.
+- `doctors` stores doctor-only profile data (`user`, contact details, profile picture URL, specialization, qualification, experience, consultation fee, and biography). The `user` field uniquely references the doctor's account in `users`.
+- `doctoravailabilities` stores each doctor's weekly time slots.
+- `reviews` stores one patient rating per completed appointment.
+- `notifications` stores in-app doctor notifications for new appointment requests and reviews.
+- `appointments` stores visits and references patient and doctor accounts by their `users` IDs.
+
+Before deploying this schema change to a database that already contains doctor accounts, back up the database and run the idempotent migration from the `backend` directory:
+
+```powershell
+npm run migrate:doctors
+```
+
+The migration copies existing doctor specialization and experience into `doctors`, verifies that every doctor account has a profile, and then removes those profile fields from the user documents. It stops without removing legacy fields if any doctor account lacks valid profile data. New doctor accounts are written to both `users` and `doctors` by the admin endpoint.
+
+For local development only, create 12 repeatable sample doctor accounts and profiles with:
+
+```powershell
+$securePassword = Read-Host "Temporary sample doctor password" -AsSecureString
+$env:DOCTOR_SEED_PASSWORD = [System.Net.NetworkCredential]::new("", $securePassword).Password
+npm run seed:doctors
+Remove-Item Env:\DOCTOR_SEED_PASSWORD
+$securePassword.Dispose()
+```
+
+The script refuses to run when `NODE_ENV=production`, never prints the password, does not change existing account passwords, and does not duplicate existing sample profiles. Newly created sample accounts share the supplied temporary password, so use this only with a non-production database.
+
 ## Routes
 
 | Method | Path | Access |
@@ -44,13 +73,24 @@ The API listens on `http://localhost:5000` by default. `GET /api/health` is a he
 | POST | `/api/auth/login` | Public |
 | GET | `/api/doctors?search=name-or-specialization` | Public |
 | GET | `/api/doctors/:id` | Public |
+| GET | `/api/doctors/me/profile` | Doctor |
+| PATCH | `/api/doctors/me/profile` | Doctor; update own account and professional details |
+| PATCH | `/api/doctors/me/password` | Doctor; verify current password before changing |
+| GET | `/api/doctors/me/patients` | Doctor; patients with appointments assigned to that doctor |
+| GET, PUT | `/api/doctors/me/availability` | Doctor; read or replace own seven-day schedule |
+| GET | `/api/doctors/me/reviews` | Doctor; own reviews and ratings |
+| GET | `/api/doctors/me/notifications` | Doctor; own notifications |
+| PATCH | `/api/doctors/me/notifications/read-all` | Doctor; mark own notifications as read |
+| PATCH | `/api/doctors/me/notifications/:id/read` | Doctor; mark own notification as read |
 | POST | `/api/appointments` | Patient |
 | GET | `/api/appointments/my` | Patient |
 | GET | `/api/appointments/doctor` | Doctor |
-| PATCH | `/api/appointments/:id/status` | Assigned doctor; `approved` or `rejected` |
+| PATCH | `/api/appointments/:id/status` | Assigned doctor; approve or reject pending visits, complete approved visits |
 | PATCH | `/api/appointments/:id/cancel` | Owning patient; pending appointments only |
+| POST | `/api/appointments/:id/review` | Owning patient; review a completed appointment once |
 | GET | `/api/admin/users` | Admin; optional `role` and `isActive` filters |
 | POST | `/api/admin/doctors` | Admin |
+| PATCH | `/api/admin/doctors/:id` | Admin; update doctor account and professional details |
 | PATCH | `/api/admin/users/:id/active` | Admin; JSON `{ "isActive": false }` or `true` |
 | DELETE | `/api/admin/users/:id` | Admin; doctors and patients only |
 | GET | `/api/admin/appointments` | Admin |

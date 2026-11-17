@@ -2,14 +2,19 @@ import { Link, Navigate, Route, Routes } from "react-router-dom";
 import ProtectedRoute, { PublicOnlyRoute } from "../components/common/ProtectedRoute.jsx";
 import DashboardLayout from "../components/dashboard/DashboardLayout.jsx";
 import AuthPage from "../pages/auth/AuthPage.jsx";
+import HomePage from "../pages/HomePage.jsx";
 import AdminAppointmentsPage from "../pages/admin/AdminAppointmentsPage.jsx";
 import AdminDashboard from "../pages/admin/AdminDashboard.jsx";
 import AdminDoctorsPage from "../pages/admin/AdminDoctorsPage.jsx";
 import AdminPatientsPage from "../pages/admin/AdminPatientsPage.jsx";
 import AdminUsersPage from "../pages/admin/AdminUsersPage.jsx";
 import DoctorAppointmentsPage from "../pages/doctor/DoctorAppointmentsPage.jsx";
+import DoctorAvailabilityPage from "../pages/doctor/DoctorAvailabilityPage.jsx";
 import DoctorDashboard from "../pages/doctor/DoctorDashboard.jsx";
+import DoctorNotificationsPage from "../pages/doctor/DoctorNotificationsPage.jsx";
+import DoctorPatientsPage from "../pages/doctor/DoctorPatientsPage.jsx";
 import DoctorProfilePage from "../pages/doctor/DoctorProfilePage.jsx";
+import DoctorReviewsPage from "../pages/doctor/DoctorReviewsPage.jsx";
 import BookAppointmentPage from "../pages/patient/BookAppointmentPage.jsx";
 import DoctorsPage from "../pages/patient/DoctorsPage.jsx";
 import PatientAppointmentsPage from "../pages/patient/PatientAppointmentsPage.jsx";
@@ -20,7 +25,7 @@ import { getRoleHome } from "../utils/formatters.js";
 
 const HomeRedirect = () => {
   const { isAuthenticated, user } = useAuth();
-  return <Navigate to={isAuthenticated ? getRoleHome(user.role) : "/login"} replace />;
+  return isAuthenticated ? <Navigate to={getRoleHome(user.role)} replace /> : <HomePage />;
 };
 
 const NotFound = () => (
@@ -57,6 +62,10 @@ const AppRoutes = () => (
         <Route path="dashboard" element={<DoctorDashboard />} />
         <Route path="requests" element={<DoctorAppointmentsPage requestsOnly />} />
         <Route path="appointments" element={<DoctorAppointmentsPage />} />
+        <Route path="patients" element={<DoctorPatientsPage />} />
+        <Route path="availability" element={<DoctorAvailabilityPage />} />
+        <Route path="reviews" element={<DoctorReviewsPage />} />
+        <Route path="notifications" element={<DoctorNotificationsPage />} />
         <Route path="profile" element={<DoctorProfilePage />} />
       </Route>
     </Route>

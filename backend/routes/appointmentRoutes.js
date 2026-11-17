@@ -1,6 +1,7 @@
 import { Router } from "express";
 import {
   cancelAppointment,
+  createAppointmentReview,
   createAppointment,
   getDoctorAppointments,
   getMyAppointments,
@@ -17,5 +18,6 @@ router.get("/my", authorize("patient"), asyncHandler(getMyAppointments));
 router.get("/doctor", authorize("doctor"), asyncHandler(getDoctorAppointments));
 router.patch("/:id/status", authorize("doctor"), asyncHandler(updateAppointmentStatus));
 router.patch("/:id/cancel", authorize("patient"), asyncHandler(cancelAppointment));
+router.post("/:id/review", authorize("patient"), asyncHandler(createAppointmentReview));
 
 export default router;

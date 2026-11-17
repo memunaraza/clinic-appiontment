@@ -31,9 +31,9 @@ const Navbar = ({ role, user, onMenuClick }) => {
               <p className="max-w-32 truncate text-xs font-bold text-ink">{user?.name}</p>
               <p className="text-[11px] capitalize text-muted">{role}</p>
             </div>
-            <span className="flex h-9 w-9 items-center justify-center rounded-full bg-accent text-xs font-bold text-medical ring-2 ring-white">
-              {getInitials(user?.name)}
-            </span>
+            {user?.profilePicture
+              ? <img src={user.profilePicture} alt="" className="h-9 w-9 rounded-full object-cover ring-2 ring-white" referrerPolicy="no-referrer" />
+              : <span className="flex h-9 w-9 items-center justify-center rounded-full bg-accent text-xs font-bold text-medical ring-2 ring-white">{getInitials(user?.name)}</span>}
           </div>
         </div>
       </div>

@@ -45,9 +45,9 @@ const Sidebar = ({ role, user, open, onClose, onLogout }) => {
 
         <div className="mt-auto border-t border-white/10 p-4">
           <div className="mb-3 flex items-center gap-3 rounded-xl bg-white/[0.07] p-3">
-            <div className="flex h-9 w-9 items-center justify-center rounded-full bg-[#D6E7E1] text-xs font-bold text-medical">
-              {getInitials(user?.name)}
-            </div>
+            {user?.profilePicture
+              ? <img src={user.profilePicture} alt="" className="h-9 w-9 shrink-0 rounded-full object-cover" referrerPolicy="no-referrer" />
+              : <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#D6E7E1] text-xs font-bold text-medical">{getInitials(user?.name)}</div>}
             <div className="min-w-0 flex-1">
               <p className="truncate text-sm font-semibold text-white">{user?.name}</p>
               <p className="truncate text-xs capitalize text-white/55">{role} account</p>

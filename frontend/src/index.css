@@ -19,7 +19,7 @@
 }
 
 body {
-  min-width: 360px;
+  min-width: 320px;
   min-height: 100vh;
   margin: 0;
   background: #f3f7f6;
@@ -38,8 +38,12 @@ button {
 
 button:focus-visible,
 a:focus-visible {
-outline: 3px solid rgba(63, 117, 104, 0.35);
-outline-offset: 2px;
+  outline: 3px solid rgba(63, 117, 104, 0.4);
+  outline-offset: 3px;
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 ::selection {
@@ -53,11 +57,11 @@ outline-offset: 2px;
   }
 
   .primary-button {
-    @apply inline-flex items-center justify-center gap-2 rounded-panel bg-sage-deep px-4 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-[#35675A] focus:outline-none focus:ring-4 focus:ring-sage-deep/20 disabled:cursor-not-allowed disabled:opacity-60;
+    @apply inline-flex items-center justify-center gap-2 rounded-panel bg-sage-deep px-4 py-3 text-sm font-semibold text-white shadow-sm transition duration-200 hover:-translate-y-0.5 hover:bg-[#35675A] hover:shadow-md focus:outline-none focus:ring-4 focus:ring-sage-deep/20 disabled:translate-y-0 disabled:cursor-not-allowed disabled:opacity-60;
   }
 
   .secondary-button {
-    @apply inline-flex items-center justify-center gap-2 rounded-panel border border-line bg-white px-4 py-3 text-sm font-semibold text-medical transition hover:border-sage hover:bg-accent focus:outline-none focus:ring-4 focus:ring-sage-deep/10 disabled:cursor-not-allowed disabled:opacity-60;
+    @apply inline-flex items-center justify-center gap-2 rounded-panel border border-line bg-white px-4 py-3 text-sm font-semibold text-medical shadow-sm transition duration-200 hover:-translate-y-0.5 hover:border-sage hover:bg-accent hover:shadow-md focus:outline-none focus:ring-4 focus:ring-sage-deep/10 disabled:translate-y-0 disabled:cursor-not-allowed disabled:opacity-60;
   }
 
   .icon-button {
@@ -84,6 +88,10 @@ outline-offset: 2px;
 }
 
 @media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto !important;
+  }
+
   *,
   *::before,
   *::after {
